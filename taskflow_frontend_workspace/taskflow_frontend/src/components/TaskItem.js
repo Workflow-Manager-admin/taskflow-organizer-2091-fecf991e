@@ -4,8 +4,11 @@ import { useAuth } from "../AuthContext";
 /**
  * PUBLIC_INTERFACE
  * TaskItem component: displays one task, allows complete/toggle, edit, delete.
+ * Props:
+ *   task - the task object to render
+ *   onEdit, onDelete, onToggle - callbacks to inform parent to reload upon mutating actions
  */
-function TaskItem({ task, onEdit, onDelete, onToggle, refreshTasks }) {
+function TaskItem({ task, onEdit, onDelete, onToggle }) {
   const { token } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState("");
@@ -19,7 +22,6 @@ function TaskItem({ task, onEdit, onDelete, onToggle, refreshTasks }) {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (!resp.ok) throw new Error("Could not toggle status");
-      refreshTasks();
       if (onToggle) onToggle(task.id);
     } catch {
       setErr("Error toggling status");
@@ -36,7 +38,6 @@ function TaskItem({ task, onEdit, onDelete, onToggle, refreshTasks }) {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (!resp.ok) throw new Error("Could not delete task");
-      refreshTasks();
       if (onDelete) onDelete(task.id);
     } catch {
       setErr("Error deleting task");

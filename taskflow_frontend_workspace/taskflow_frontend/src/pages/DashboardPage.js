@@ -206,12 +206,13 @@ function DashboardPage() {
         />
       )}
       <TaskList
-        key={refreshFlag + "|" + statusFilter + "|" + priorityFilter + "|" + sortBy + "|" + sortDir}
+        key={statusFilter + "|" + priorityFilter + "|" + sortBy + "|" + sortDir}
         onEditTask={handleEditTask}
-        onDeleteTask={handleFormSuccess}
-        onToggleStatus={handleFormSuccess}
+        onDeleteTask={() => setRefreshFlag(r => r + 1)}
+        onToggleStatus={() => setRefreshFlag(r => r + 1)}
         filter={filter}
         sort={sort}
+        refreshFlag={refreshFlag}
       />
     </DashboardLayout>
   );

@@ -6,7 +6,7 @@ import { useAuth } from "../AuthContext";
  * PUBLIC_INTERFACE
  * TaskList component: displays a list of tasks, handles fetching tasks from backend API.
  */
-function TaskList({ onEditTask, onDeleteTask, onToggleStatus, filter, sort }) {
+function TaskList({ onEditTask, onDeleteTask, onToggleStatus, filter, sort, refreshFlag }) {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +14,7 @@ function TaskList({ onEditTask, onDeleteTask, onToggleStatus, filter, sort }) {
 
   // Fetch tasks from backend, filtered/sorted as needed
   useEffect(() => {
+    let ignore = false;
     async function fetchTasks() {
       setLoading(true);
       setFetchErr("");
@@ -36,23 +37,16 @@ function TaskList({ onEditTask, onDeleteTask, onToggleStatus, filter, sort }) {
         });
         if (!resp.ok) throw new Error("Failed to fetch tasks");
         const data = await resp.json();
-        setTasks(data);
+        if (!ignore) setTasks(data);
       } catch (err) {
-        setFetchErr("Unable to load tasks.");
+        if (!ignore) setFetchErr("Unable to load tasks.");
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     }
     fetchTasks();
-  }, [token, filter, sort]);
-
-  // Handler for local updates (after creation, deletion, edit)
-  const refresh = () => {
-    setLoading(true);
-    setTimeout(() => { // triggers effect
-      setLoading(false);
-    }, 1);
-  };
+    return () => { ignore = true; };
+  }, [token, filter, sort, refreshFlag]);
 
   if (loading) return <div>Loading tasks...</div>;
   if (fetchErr) return <div style={{ color: 'crimson' }}>{fetchErr}</div>;
@@ -67,7 +61,7 @@ function TaskList({ onEditTask, onDeleteTask, onToggleStatus, filter, sort }) {
           onEdit={onEditTask}
           onDelete={onDeleteTask}
           onToggle={onToggleStatus}
-          refreshTasks={refresh}
+          refreshTasks={() => {}} // not used, see below
         />
       ))}
     </div>
