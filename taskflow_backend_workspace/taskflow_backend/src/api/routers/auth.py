@@ -27,6 +27,8 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 # Dependency to provide DB session
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -43,7 +45,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=409, detail="Username already registered")
     db_user = create_user(db, user.username, user.password)
     return db_user
-
 # PUBLIC_INTERFACE
 @router.post("/login", response_model=Token, summary="Login and get JWT token")
 def login(
@@ -56,8 +57,8 @@ def login(
     access_token = create_access_token(data={"sub": db_user.username})
     return Token(access_token=access_token, token_type="bearer")
 
-
 # PUBLIC_INTERFACE
+
 
 
 def get_current_user(
