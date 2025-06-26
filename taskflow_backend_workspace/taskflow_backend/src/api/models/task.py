@@ -17,6 +17,12 @@ class Task(Base):
     description = Column(String(1024), nullable=True)
     completed = Column(Boolean, default=False)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    priority = Column(
+        String(16),
+        default="normal",
+        nullable=False,
+        index=True
+    )  # New: low, normal, high, etc.
     created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
     updated_at = Column(
         DateTime,

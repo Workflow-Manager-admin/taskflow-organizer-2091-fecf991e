@@ -15,6 +15,9 @@ class TaskBase(BaseModel):
     description: Optional[str] = Field(
         None, max_length=1024, description="Description of the task"
     )
+    priority: Optional[str] = Field(
+        "normal", description="Priority of the task ('low', 'normal', 'high')", max_length=16
+    )
 
 
 # PUBLIC_INTERFACE
@@ -36,6 +39,9 @@ class TaskUpdate(BaseModel):
     completed: Optional[bool] = Field(
         None, description="Mark the task as completed or not"
     )
+    priority: Optional[str] = Field(
+        None, description="Update the priority of the task", max_length=16
+    )
 
 
 # PUBLIC_INTERFACE
@@ -46,6 +52,7 @@ class TaskOut(TaskBase):
     completed: bool
     created_at: datetime
     updated_at: datetime
+    priority: str
 
     class Config:
         orm_mode = True
