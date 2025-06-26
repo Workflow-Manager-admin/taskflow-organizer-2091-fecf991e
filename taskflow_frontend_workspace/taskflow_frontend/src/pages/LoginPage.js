@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 /**
  * PUBLIC_INTERFACE
@@ -10,6 +11,8 @@ function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
 
   // PUBLIC_INTERFACE
   const handleChange = (e) => {
@@ -36,10 +39,10 @@ function LoginPage() {
       });
       if (resp.ok) {
         const data = await resp.json();
-        localStorage.setItem('access_token', data.access_token);
-        // Optionally store user info if needed
-        // Redirect to dashboard
-        navigate('/dashboard');
+        login(data.access_token);
+        // Redirect to original location (if any), else dashboard
+        const from = (location.state && location.state.from && location.state.from.pathname) || '/dashboard';
+        navigate(from, { replace: true });
       } else {
         const data = await resp.json().catch(() => ({}));
         setError(data?.detail || 'Login failed. Check username or password.');
