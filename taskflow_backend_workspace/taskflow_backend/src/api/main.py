@@ -1,7 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from .routers.auth import router as auth_router
+
+app = FastAPI(
+    title="Taskflow API",
+    description="Backend API for Taskflow app with authentication and task management.",
+    version="1.0.0",
+    openapi_tags=[
+        {"name": "auth", "description": "User registration, login, authentication"},
+        {"name": "tasks", "description": "User task operations (protected)"},
+    ]
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -11,7 +21,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
 
-@app.get("/")
+
+@app.get("/", tags=["health"])
 def health_check():
     return {"message": "Healthy"}
