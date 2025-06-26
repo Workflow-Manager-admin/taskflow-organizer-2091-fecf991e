@@ -20,12 +20,12 @@ function TaskList({ onEditTask, onDeleteTask, onToggleStatus, filter, sort }) {
       try {
         let url = "/api/tasks/";
         let params = [];
-        if (filter?.status) params.push(`status=${encodeURIComponent(filter.status)}`);
-        if (filter?.priority) params.push(`priority=${encodeURIComponent(filter.priority)}`);
-        if (sort) {
-          params.push(`sort_by=${encodeURIComponent(sort.by)}`);
-          params.push(`sort_dir=${encodeURIComponent(sort.dir)}`);
-        }
+        const { status, priority } = filter || {};
+        const { by, dir } = sort || {};
+        if (status) params.push(`status=${encodeURIComponent(status)}`);
+        if (priority) params.push(`priority=${encodeURIComponent(priority)}`);
+        if (by) params.push(`sort_by=${encodeURIComponent(by)}`);
+        if (dir) params.push(`sort_dir=${encodeURIComponent(dir)}`);
         if (params.length) url += "?" + params.join("&");
 
         const resp = await fetch(url, {
