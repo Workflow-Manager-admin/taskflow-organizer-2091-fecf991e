@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
+
+// Skeleton page components
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
+import TaskDetailPage from './pages/TaskDetailPage';
 
 // PUBLIC_INTERFACE
 function App() {
@@ -18,7 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <Router>
         <button 
           className="theme-toggle" 
           onClick={toggleTheme}
@@ -26,22 +32,15 @@ function App() {
         >
           {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
         </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/tasks/:id" element={<TaskDetailPage />} />
+          {/* Redirect / to /login as an initial landing logic */}
+          <Route path="/" element={<LoginPage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
