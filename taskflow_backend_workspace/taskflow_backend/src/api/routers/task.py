@@ -24,10 +24,8 @@ router = APIRouter(
     tags=["tasks"],
 )
 
-
 # PUBLIC_INTERFACE
-from typing import Optional
-from datetime import datetime
+
 
 @router.get(
     "/",
@@ -103,7 +101,12 @@ def create(
     current_user: User = Depends(get_current_user),
 ):
     """Add a new task for authenticated user."""
-    db_task = create_task(db, current_user.id, title=task.title, description=task.description, priority=task.priority)
+    db_task = create_task(
+        db, current_user.id,
+        title=task.title,
+        description=task.description,
+        priority=task.priority
+    )
     return db_task
 
 
